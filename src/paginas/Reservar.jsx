@@ -11,10 +11,10 @@ export default function Reservar() {
   const [socioAsignado, setSocioAsignado] = useState(null)
   const [tipoViaje, setTipoViaje] = useState("")
   const [mensaje, setMensaje] = useState("")
+  const [recibo, setRecibo] = useState(null)
 
   const socios = obtenerSocios().filter(s => !s.eliminado)
 
-  // cuando elijo tipo de vehículo, asigno un socio automáticamente
   function elegirTipoVehiculo(tipo) {
     setTipoVehiculo(tipo)
     setTipoViaje("")
@@ -60,7 +60,13 @@ export default function Reservar() {
     reservas.push(reserva)
     localStorage.setItem("reservas", JSON.stringify(reservas))
 
-    setMensaje(`Reserva confirmada ✅ Total: $${costoFinal}`)
+    setRecibo({
+      socio: socioAsignado.nombre,
+      vehiculo: socioAsignado.vehiculo,
+      precio: costoFinal
+    })
+
+    setMensaje("")
     setTipoVehiculo("")
     setSocioAsignado(null)
     setTipoViaje("")
@@ -142,6 +148,17 @@ export default function Reservar() {
       </button>
 
       {mensaje && <p style={{ marginTop: 10 }}>{mensaje}</p>}
+
+      {/* recibo de viaje confirmado*/}
+      {recibo && (
+        <div style={{ border: "1px solid #070707ff", padding: "1rem", marginTop: "1rem" }}>
+          <h3>Recibo de Reserva</h3>
+          <p><strong>Conductor:</strong> {recibo.socio}</p>
+          <p><strong>Vehículo:</strong> {recibo.vehiculo.modelo} ({recibo.vehiculo.patente})</p>
+          <p><strong>Precio estimado:</strong> ${recibo.precio}</p>
+          <p>Su vehículo llegará en breves</p>
+        </div>
+      )}
     </div>
   )
 }
