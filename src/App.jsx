@@ -3,12 +3,11 @@ import { useState, useEffect } from "react"
 import { obtenerUsuarioActual, cerrarSesion, obtenerUsuarios } from "./lib/usuarios"
 import { obtenerSocios } from "./lib/socios"
 
-
 export default function App() {
   const [usuario, setUsuario] = useState(null)
 
   useEffect(() => {
-    obtenerUsuarios() 
+    obtenerUsuarios()
     obtenerSocios()
     setUsuario(obtenerUsuarioActual())
   }, [])
@@ -21,7 +20,25 @@ export default function App() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>Trabajo Examen 2025</h1>
+      {/* boton volver al inicio*/}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <button
+            style={{
+              backgroundColor: "#0a0a0aff",
+              color: "white",
+              fontSize: "1.2rem",
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+            }}
+          >
+            Ubern’t
+          </button>
+        </Link>
+      </div>
 
       {!usuario && (
         <nav>
