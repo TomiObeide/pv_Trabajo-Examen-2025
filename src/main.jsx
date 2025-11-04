@@ -11,6 +11,7 @@ import AdminSocios from "./paginas/AdminSocios"
 import AdminUsuarios from "./paginas/AdminUsuarios"
 
 import { obtenerUsuarioActual } from "./lib/usuarios"
+import { UsuarioContext } from "./context/UsuarioContext" // contexto
 
 // proteccion d admin
 // si no hay user va a login
@@ -74,6 +75,9 @@ const router = createBrowserRouter([
 // render principal
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    {/* contexto para q la app tenga acceso a usuario */}
+    <UsuarioContext.Provider value={obtenerUsuarioActual()}>
+      <RouterProvider router={router} />
+    </UsuarioContext.Provider>
   </React.StrictMode>
 )

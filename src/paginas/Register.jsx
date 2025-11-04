@@ -12,6 +12,12 @@ export default function Register() {
   function manejarRegistro(e) {
     e.preventDefault() 
 
+    //  validacion de no permitir campos vacios
+    if (!nombre || !email || !password) {
+      alert("Todos los campos son obligatorios")
+      return
+    }
+
     registrarUsuario({ nombre, email, password })
 
     // redirige al login cuando se crea un usuario

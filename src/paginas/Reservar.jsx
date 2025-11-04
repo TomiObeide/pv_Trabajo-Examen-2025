@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react"
-import { obtenerUsuarioActual } from "../lib/usuarios"
+import { useState, useMemo, useCallback } from "react"
+import { useUsuario } from "../context/UsuarioContext" // usuario contexto
 import { obtenerSocios } from "../lib/socios"
 import "../App.css"
 
@@ -10,9 +10,8 @@ const TARIFAS_BASE = { corta: 4000, media: 7000, larga: 20000 }
 const RECARGOS = { X: 0, Luxe: 0.10, Premium: 0.20 }
 
 export default function Reservar() {
-  // usuario actual
-  const usuario = obtenerUsuarioActual()
-
+  // usuario actual desde contexto
+  const usuario = useUsuario()
 
   const [tipoVehiculo, setTipoVehiculo] = useState("")   
   const [socioAsignado, setSocioAsignado] = useState(null)
@@ -23,8 +22,8 @@ export default function Reservar() {
   // lista d socios activos
   const socios = obtenerSocios().filter(s => !s.eliminado)
 
-  // elegir tipo de vehiculo 
-  function elegirTipoVehiculo(tipo) {
+  // elegir tipo de vehiculo (useCallback para no recrear en cada render)
+  const elegirTipoVehiculo = useCallback((tipo) => {
     setTipoVehiculo(tipo)
     setTipoViaje("") // cuando se cambia el vehiculo resetea la distancia
 
@@ -37,18 +36,18 @@ export default function Reservar() {
       // si no hay muestra mensaje de error
       setSocioAsignado(null)
     }
-  }
+  }, [socios])
 
   // calculo costo final
-  const costoFinal = useMemo(() => {
+  const costoFinal = useMemo(() => { // use memo para no recalcular si no se cambian dependencias
     if (!socioAsignado || !tipoViaje) return 0
     const base = TARIFAS_BASE[tipoViaje]
     const recargo = RECARGOS[socioAsignado.vehiculo.tipo] || 0
     return Math.round(base * (1 + recargo))
   }, [socioAsignado, tipoViaje])
 
-  // zona de confirmacion
-  function confirmarReserva() {
+  // zona de confirmacion (useCallback para optimizar)
+  const confirmarReserva = useCallback(() => {
     // validaciones antes de confirmar
     if (!usuario) {
       setMensaje("Debés iniciar sesión para confirmar.")
@@ -59,7 +58,6 @@ export default function Reservar() {
       return
     }
 
-  
     const reserva = {
       id: crypto.randomUUID(),
       usuarioId: usuario.id,
@@ -90,7 +88,7 @@ export default function Reservar() {
     setTipoVehiculo("")
     setSocioAsignado(null)
     setTipoViaje("")
-  }
+  }, [usuario, socioAsignado, tipoViaje, costoFinal])
 
   return (
     <div>

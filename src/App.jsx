@@ -1,36 +1,34 @@
 import { Outlet, Link } from "react-router-dom"
-import { useState, useEffect } from "react"
-import { obtenerUsuarioActual, cerrarSesion, obtenerUsuarios } from "./lib/usuarios"
+import { useEffect } from "react"
+import { cerrarSesion, obtenerUsuarios } from "./lib/usuarios"
 import { obtenerSocios } from "./lib/socios"
+import { useUsuario } from "./context/UsuarioContext" // hook de contexto
 import "./App.css"
 
 export default function App() {
-  const [usuario, setUsuario] = useState(null)
+  // usuario actual desde contexto
+  const usuario = useUsuario()
 
   // inicializa usuarios actuales y socios
   useEffect(() => {
     obtenerUsuarios()
     obtenerSocios()
-    setUsuario(obtenerUsuarioActual())
   }, [])
 
-  // cierre de sesion
+  // cierre de sesión
   function manejarLogout() {
-    cerrarSesion()          
-    setUsuario(null)        
+    cerrarSesion()
     window.location.href = "/login" // redirige al login
   }
 
   return (
     <div style={{ padding: 20 }}>
-      {/* boton ubernt */}
       <div className="header-ubern">
         <Link to="/" style={{ textDecoration: "none" }}>
           <button className="boton-principal">Ubern’t</button>
         </Link>
       </div>
 
-      {/* al no haber user mostrar login y registro */}
       {!usuario && (
         <nav className="nav-links">
           <Link to="/login" style={{ textDecoration: "none" }}>
@@ -42,7 +40,6 @@ export default function App() {
         </nav>
       )}
 
-      {/* si hay mostrar la sesion activa */}
       {usuario && (
         <div style={{ marginBottom: 20 }}>
           <strong>Sesión iniciada:</strong> {usuario.nombre} ({usuario.rol}){" "}
@@ -50,7 +47,6 @@ export default function App() {
             Cerrar sesión
           </button>
 
-          {/* si es admin mostrar boton panel admin */}
           {usuario.rol === "admin" && (
             <div style={{ marginTop: 12 }}>
               <Link to="/admin" style={{ textDecoration: "none" }}>
@@ -60,7 +56,7 @@ export default function App() {
           )}
         </div>
       )}
-      
+
       <Outlet />
     </div>
   )
