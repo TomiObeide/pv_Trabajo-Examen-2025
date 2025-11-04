@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom" 
 import "./../App.css" 
 
+// Pagina admin(simple y facil de usar)
+//gestion socios y usuarios
 export default function Admin() {
   return (
     <div>

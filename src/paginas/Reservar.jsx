@@ -3,12 +3,13 @@ import { useUsuario } from "../context/UsuarioContext" // usuario contexto
 import { obtenerSocios } from "../lib/socios"
 import "../App.css"
 
-// tarifa base
+// tarifa base 
 const TARIFAS_BASE = { corta: 4000, media: 7000, larga: 20000 }
 
 // recargo
 const RECARGOS = { X: 0, Luxe: 0.10, Premium: 0.20 }
 
+//componente d reservas
 export default function Reservar() {
   // usuario actual desde contexto
   const usuario = useUsuario()
@@ -27,10 +28,10 @@ export default function Reservar() {
     setTipoVehiculo(tipo)
     setTipoViaje("") // cuando se cambia el vehiculo resetea la distancia
 
-    // buscar socios disponibles
+    // buscar socios disponibles con el vehiculo elegido
     const candidatos = socios.filter(s => s.vehiculo.tipo === tipo)
     if (candidatos.length > 0) {
-      // asigna socios
+      // asigna socios(el primero, esto se puede cambiar)
       setSocioAsignado(candidatos[0])
     } else {
       // si no hay muestra mensaje de error
@@ -76,7 +77,7 @@ export default function Reservar() {
     reservas.push(reserva)
     localStorage.setItem("reservas", JSON.stringify(reservas))
 
-    // recibo visual
+    // recibo visual para mostrar
     setRecibo({
       socio: socioAsignado.nombre,
       vehiculo: socioAsignado.vehiculo,

@@ -26,8 +26,8 @@ function RutaProtegida({ children, soloAdmin = false }) {
 // rutas principales
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />, 
+    path: "/",              //ruta principal
+    element: <App />,       //layout
     children: [
       {
         index: true, 
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
 
-      // rutas admin
+      // rutas exclusivas de admin
       {
         path: "admin",
         element: (

@@ -2,13 +2,21 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { registrarUsuario } from "../lib/usuarios"
 
+
+// Register
+
 export default function Register() {
   const [nombre, setNombre] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+  //dsp de registrarse redirige a login
   const navigate = useNavigate()
 
+  //funcion formulario de registro
+  //verifica campos vacios
+  //llama a registrarUsuario con los datos q se ingresen
+  //redirige a login
   function manejarRegistro(e) {
     e.preventDefault() 
 
@@ -17,12 +25,14 @@ export default function Register() {
       alert("Todos los campos son obligatorios")
       return
     }
-
+   //regustro del nuevo usuario
     registrarUsuario({ nombre, email, password })
 
     // redirige al login cuando se crea un usuario
     navigate("/login")
   }
+
+  //render registro
 
   return (
     <div>

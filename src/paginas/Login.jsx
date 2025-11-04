@@ -2,13 +2,17 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { iniciarSesion } from "../lib/usuarios"
 
+// Login
 export default function Login() {
+  //Estado local para capturar mail y password ingresados
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
   // redirige usuario dsp del login
   const navigate = useNavigate()
 
+
+  // Funcion login si los datos son correctos va a pagina principal si no muestra error
   function manejarLogin(e) {
     e.preventDefault() 
 
@@ -22,6 +26,8 @@ export default function Login() {
       alert("Credenciales inválidas")
     }
   }
+
+  //render de formulario login
 
   return (
     <div>

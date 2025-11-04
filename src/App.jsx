@@ -9,26 +9,27 @@ export default function App() {
   // usuario actual desde contexto
   const usuario = useUsuario()
 
-  // inicializa usuarios actuales y socios
-  useEffect(() => {
+  // inicializa usuarios actuales y socios precargar
+  useEffect(() => { 
     obtenerUsuarios()
     obtenerSocios()
   }, [])
 
-  // cierre de sesión
+  // cierre de sesión 
   function manejarLogout() {
     cerrarSesion()
     window.location.href = "/login" // redirige al login
   }
 
+  // layout principal
   return (
     <div style={{ padding: 20 }}>
       <div className="header-ubern">
         <Link to="/" style={{ textDecoration: "none" }}>
-          <button className="boton-principal">Ubern’t</button>
+          <button className="boton-principal">Ubern’t</button>  {/* boton principal ubernt */}
         </Link>
       </div>
-
+              {/* si no hay usuario logueado muestra boton login y register */}
       {!usuario && (
         <nav className="nav-links">
           <Link to="/login" style={{ textDecoration: "none" }}>
@@ -39,14 +40,14 @@ export default function App() {
           </Link>
         </nav>
       )}
-
+              {/* si si hay usuario logueado muestra nombre, rol y logout */}
       {usuario && (
         <div style={{ marginBottom: 20 }}>
           <strong>Sesión iniciada:</strong> {usuario.nombre} ({usuario.rol}){" "}
           <button className="boton-secundario" onClick={manejarLogout}>
             Cerrar sesión
           </button>
-
+               {/* si el usuario es admin muestra el boton panel admin */}
           {usuario.rol === "admin" && (
             <div style={{ marginTop: 12 }}>
               <Link to="/admin" style={{ textDecoration: "none" }}>

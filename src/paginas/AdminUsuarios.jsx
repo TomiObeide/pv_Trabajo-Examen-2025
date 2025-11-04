@@ -6,6 +6,8 @@ import "../App.css"
 // roles unicos permitidos
 const ROLES = ["admin", "cliente"]
 
+// Admion usuarios
+// muestra la lista de usuarios y permite editarlos o eliminarlos
 export default function AdminUsuarios() {
   // lista de usuarios actual
   const [usuarios, setUsuarios] = useState(obtenerUsuarios())
@@ -14,7 +16,7 @@ export default function AdminUsuarios() {
 
   const [form, setForm] = useState({ nombre: "", email: "", rol: "" })
 
-  // eliminar usuario 
+  // eliminar usuario (borrado logico)
   function eliminarUsuario(id) {
     const actualizados = usuarios.map(u =>
       u.id === id ? { ...u, eliminado: true } : u
@@ -25,6 +27,10 @@ export default function AdminUsuarios() {
   }
 
   // Guardar edicion
+  // reemplaza los datos del usuario con los llenados en el from
+  //actualiza el local storage
+  // limpia el form
+
   function guardarEdicion(id) {
     const actualizados = usuarios.map(u =>
       u.id === id ? { ...u, ...form } : u
@@ -40,6 +46,7 @@ export default function AdminUsuarios() {
   // muestra solo user activos (false)
   const activos = usuarios.filter(u => !u.eliminado)
 
+  //render completo
   return (
     <div>
       <h2>Gestión de Usuarios</h2>
@@ -48,7 +55,7 @@ export default function AdminUsuarios() {
       {activos.map(usuario => (
         <div key={usuario.id} className="tarjeta">
           {editando === usuario.id ? (
-            // EDICION
+            // VISTA MODO EDICION
             <>
               <input
                 value={form.nombre}

@@ -6,6 +6,9 @@ import "../App.css"
 // unicos tipos de vehiculos
 const TIPOS = ["X", "Luxe", "Premium"]
 
+//admin socios
+//permite crear editar y elimniar logicamente los socios de la app
+
 export default function AdminSocios() {
   // lista de socios en localstorage
   const [socios, setSocios] = useState(obtenerSocios())
@@ -19,7 +22,7 @@ export default function AdminSocios() {
     modeloVehiculo: ""
   })
 
-  // Cuando un socio se esta editando
+  // Cuando un socio se esta editando 
   const [editando, setEditando] = useState(null)
 
   // formulario de edicion
@@ -66,7 +69,10 @@ export default function AdminSocios() {
     guardarSocios(actualizados)
   }
 
-  // Boton guardar edicion
+  // Funcion guardar edicion
+  // reescribe los datos del socio con los del form
+  // actualiza el localstorage
+  //limpia el form
   function guardarEdicion(id) {
     const actualizados = socios.map(s =>
       s.id === id
@@ -87,6 +93,7 @@ export default function AdminSocios() {
   // Socios activos(no eliminados logicamente)
   const activos = socios.filter(s => !s.eliminado)
 
+  // render de todo 
   return (
     <div>
       <h2>Gestión de Socios</h2>
@@ -130,6 +137,7 @@ export default function AdminSocios() {
       {activos.map(socio => (
         <div key={socio.id} className="tarjeta">
           {editando === socio.id ? (
+            // vista editando
             <>
               <input
                 value={form.nombre}
@@ -162,6 +170,7 @@ export default function AdminSocios() {
               </div>
             </>
           ) : (
+            // vista sin editar
             <>
               <h3>{socio.nombre}</h3>
               <p><strong>Experiencia:</strong> {socio.experiencia} años</p>

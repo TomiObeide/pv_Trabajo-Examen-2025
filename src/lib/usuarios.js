@@ -44,13 +44,17 @@ export function registrarUsuario({ nombre, email, password, rol = "cliente" }) {
   return nuevo
 }
 
-// devuelve el usuario actual
+// devuelve el usuario actual(logueado)
+// se guarda como usuario_actual en local storage
 export function obtenerUsuarioActual() {
   const data = localStorage.getItem("usuario_actual")
   return data ? JSON.parse(data) : null
 }
 
 // inicia sesion con usuario guardados 
+// busca usuario por mail y pass
+// verifica q eliminado=false
+//si es valido lo guarda como usuario_actual
 export function iniciarSesion(email, password) {
   const usuarios = obtenerUsuarios()
   const usuario = usuarios.find(
@@ -64,6 +68,7 @@ export function iniciarSesion(email, password) {
 }
 
 // cierra sesion
+// elimina al usuario_actual de localstorage
 export function cerrarSesion() {
   localStorage.removeItem("usuario_actual")
 }

@@ -1,6 +1,8 @@
 const CLAVE = "socios" 
 
 // lista d socios fijos
+//se cargan por defecto si no hay datos en el localstorage
+//siempre hay un socio por vehiculo disponible
 const SOCIOS_INICIALES = [
   {
     id: "socio-1",
@@ -37,12 +39,13 @@ export function obtenerSocios() {
   }
   return JSON.parse(data)
 }
-
+//guardar socios es la lista completa d socios en local storage
 export function guardarSocios(lista) {
   localStorage.setItem(CLAVE, JSON.stringify(lista))
 }
 
 // funcion crear socios
+// crea un nuevo socio con los datos del form
 export function crearSocio({ nombre, experiencia, patente, tipoVehiculo, modeloVehiculo }) {
   const lista = obtenerSocios()
   const nuevo = {
@@ -60,7 +63,9 @@ export function crearSocio({ nombre, experiencia, patente, tipoVehiculo, modeloV
   return nuevo
 }
 
-// editar socios al apretar
+// editar socios 
+//edita los datos de socios existentes
+//reemplaza los campos con lo que se escribio en el form
 export function editarSocio(id, cambios) {
   const lista = obtenerSocios().map(s =>
     s.id === id ? { ...s, ...cambios } : s
