@@ -1,31 +1,45 @@
 import { useState, useMemo } from "react"
 import { obtenerUsuarioActual } from "../lib/usuarios"
 import { obtenerSocios } from "../lib/socios"
+import "../App.css"
 
+// tarifa base
 const TARIFAS_BASE = { corta: 4000, media: 7000, larga: 20000 }
+
+// recargo
 const RECARGOS = { X: 0, Luxe: 0.10, Premium: 0.20 }
 
 export default function Reservar() {
+  // usuario actual
   const usuario = obtenerUsuarioActual()
-  const [tipoVehiculo, setTipoVehiculo] = useState("")
-  const [socioAsignado, setSocioAsignado] = useState(null)
-  const [tipoViaje, setTipoViaje] = useState("")
-  const [mensaje, setMensaje] = useState("")
-  const [recibo, setRecibo] = useState(null)
 
+
+  const [tipoVehiculo, setTipoVehiculo] = useState("")   
+  const [socioAsignado, setSocioAsignado] = useState(null)
+  const [tipoViaje, setTipoViaje] = useState("")         
+  const [mensaje, setMensaje] = useState("")             
+  const [recibo, setRecibo] = useState(null)             
+
+  // lista d socios activos
   const socios = obtenerSocios().filter(s => !s.eliminado)
 
+  // elegir tipo de vehiculo 
   function elegirTipoVehiculo(tipo) {
     setTipoVehiculo(tipo)
-    setTipoViaje("")
+    setTipoViaje("") // cuando se cambia el vehiculo resetea la distancia
+
+    // buscar socios disponibles
     const candidatos = socios.filter(s => s.vehiculo.tipo === tipo)
     if (candidatos.length > 0) {
+      // asigna socios
       setSocioAsignado(candidatos[0])
     } else {
+      // si no hay muestra mensaje de error
       setSocioAsignado(null)
     }
   }
 
+  // calculo costo final
   const costoFinal = useMemo(() => {
     if (!socioAsignado || !tipoViaje) return 0
     const base = TARIFAS_BASE[tipoViaje]
@@ -33,7 +47,9 @@ export default function Reservar() {
     return Math.round(base * (1 + recargo))
   }, [socioAsignado, tipoViaje])
 
+  // zona de confirmacion
   function confirmarReserva() {
+    // validaciones antes de confirmar
     if (!usuario) {
       setMensaje("Debés iniciar sesión para confirmar.")
       return
@@ -43,6 +59,7 @@ export default function Reservar() {
       return
     }
 
+  
     const reserva = {
       id: crypto.randomUUID(),
       usuarioId: usuario.id,
@@ -56,16 +73,19 @@ export default function Reservar() {
       fecha: new Date().toLocaleString(),
     }
 
+    // guardar reservas en caso de necesitar(localstorage)
     const reservas = JSON.parse(localStorage.getItem("reservas") || "[]")
     reservas.push(reserva)
     localStorage.setItem("reservas", JSON.stringify(reservas))
 
+    // recibo visual
     setRecibo({
       socio: socioAsignado.nombre,
       vehiculo: socioAsignado.vehiculo,
       precio: costoFinal
     })
 
+    // resetear form
     setMensaje("")
     setTipoVehiculo("")
     setSocioAsignado(null)
@@ -76,40 +96,40 @@ export default function Reservar() {
     <div>
       <h2>Pedir un vehículo</h2>
 
-      {/* Paso 1: elegir tipo de vehículo */}
+      {/* elegir vehiculo */}
       <div style={{ marginBottom: 12 }}>
         <p><strong>Elegí el tipo de vehículo:</strong></p>
         {["X", "Luxe", "Premium"].map(tipo => (
           <button
             key={tipo}
             onClick={() => elegirTipoVehiculo(tipo)}
-            style={{
-              marginRight: 8,
-              backgroundColor: tipoVehiculo === tipo ? "#4caf50" : "#eee",
-              color: tipoVehiculo === tipo ? "white" : "black",
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: 4,
-              cursor: "pointer"
-            }}
+            className={tipoVehiculo === tipo ? "boton-principal" : "boton-secundario"}
+            style={{ marginRight: 8 }}
           >
             {tipo}
           </button>
         ))}
       </div>
 
-      {/* Mostrar socio asignado */}
+      {/* socio no dispo */}
+      {tipoVehiculo && !socioAsignado && (
+        <p style={{ marginTop: 12, color: "red" }}>
+          Conductores de esta categoría no disponibles
+        </p>
+      )}
+
+      {/* socio asignado */}
       {socioAsignado && (
-        <div style={{ marginTop: 12 }}>
+        <div className="tarjeta">
           <h3>Conductor asignado</h3>
           <p><strong>Nombre:</strong> {socioAsignado.nombre}</p>
           <p><strong>Experiencia en la app:</strong> {socioAsignado.experiencia} años</p>
-          <p><strong>Licencia:</strong> {socioAsignado.licencia}</p>
+          <p><strong>Patente:</strong> {socioAsignado.patente}</p>
           <p><strong>Vehículo:</strong> {socioAsignado.vehiculo.tipo} {socioAsignado.vehiculo.modelo}</p>
         </div>
       )}
 
-      {/* Paso 2: elegir distancia */}
+      {/* distancia */}
       {socioAsignado && (
         <div style={{ marginTop: 12 }}>
           <p><strong>Distancia del viaje:</strong></p>
@@ -117,15 +137,8 @@ export default function Reservar() {
             <button
               key={dist}
               onClick={() => setTipoViaje(dist)}
-              style={{
-                marginRight: 8,
-                backgroundColor: tipoViaje === dist ? "#ff9800" : "#eee",
-                color: tipoViaje === dist ? "white" : "black",
-                padding: "8px 12px",
-                border: "1px solid #ccc",
-                borderRadius: 4,
-                cursor: "pointer"
-              }}
+              className={tipoViaje === dist ? "boton-principal" : "boton-secundario"}
+              style={{ marginRight: 8 }}
             >
               {dist === "corta" && "Corta ($4000)"}
               {dist === "media" && "Media ($7000)"}
@@ -135,23 +148,27 @@ export default function Reservar() {
         </div>
       )}
 
+      {/* costo final */}
       <div style={{ marginTop: 12 }}>
         <strong>Costo final:</strong> {costoFinal ? `$${costoFinal}` : "-"}
       </div>
 
-      <button 
-        style={{ marginTop: 12 }} 
+      {/* boton d confirm */}
+      <button
+        className="boton-principal"
+        style={{ marginTop: 12 }}
         onClick={confirmarReserva}
         disabled={!socioAsignado || !tipoViaje}
       >
         Confirmar reserva
       </button>
 
+      {/* mensaje d erorr */}
       {mensaje && <p style={{ marginTop: 10 }}>{mensaje}</p>}
 
-      {/* recibo de viaje confirmado*/}
+      {/* recibo */}
       {recibo && (
-        <div style={{ border: "1px solid #070707ff", padding: "1rem", marginTop: "1rem" }}>
+        <div className="tarjeta">
           <h3>Recibo de Reserva</h3>
           <p><strong>Conductor:</strong> {recibo.socio}</p>
           <p><strong>Vehículo:</strong> {recibo.vehiculo.modelo} ({recibo.vehiculo.patente})</p>

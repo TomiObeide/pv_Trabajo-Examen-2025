@@ -2,63 +2,65 @@ import { Outlet, Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { obtenerUsuarioActual, cerrarSesion, obtenerUsuarios } from "./lib/usuarios"
 import { obtenerSocios } from "./lib/socios"
+import "./App.css"
 
 export default function App() {
   const [usuario, setUsuario] = useState(null)
 
+  // inicializa usuarios actuales y socios
   useEffect(() => {
     obtenerUsuarios()
     obtenerSocios()
     setUsuario(obtenerUsuarioActual())
   }, [])
 
+  // cierre de sesion
   function manejarLogout() {
-    cerrarSesion()
-    setUsuario(null)
-    window.location.href = "/login"
+    cerrarSesion()          
+    setUsuario(null)        
+    window.location.href = "/login" // redirige al login
   }
 
   return (
     <div style={{ padding: 20 }}>
-      {/* boton volver al inicio*/}
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+      {/* boton ubernt */}
+      <div className="header-ubern">
         <Link to="/" style={{ textDecoration: "none" }}>
-          <button
-            style={{
-              backgroundColor: "#0a0a0aff",
-              color: "white",
-              fontSize: "1.2rem",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
-            }}
-          >
-            Ubern’t
-          </button>
+          <button className="boton-principal">Ubern’t</button>
         </Link>
       </div>
 
+      {/* al no haber user mostrar login y registro */}
       {!usuario && (
-        <nav>
-          <Link to="/login">Iniciar Sesión</Link> |{" "}
-          <Link to="/register">Registro</Link>
+        <nav className="nav-links">
+          <Link to="/login" style={{ textDecoration: "none" }}>
+            <button className="boton-principal">Iniciar Sesión</button>
+          </Link>
+          <Link to="/register" style={{ textDecoration: "none" }}>
+            <button className="boton-principal">Registrarse</button>
+          </Link>
         </nav>
       )}
 
+      {/* si hay mostrar la sesion activa */}
       {usuario && (
         <div style={{ marginBottom: 20 }}>
           <strong>Sesión iniciada:</strong> {usuario.nombre} ({usuario.rol}){" "}
-          <button onClick={manejarLogout}>Cerrar sesión</button>
+          <button className="boton-secundario" onClick={manejarLogout}>
+            Cerrar sesión
+          </button>
+
+          {/* si es admin mostrar boton panel admin */}
           {usuario.rol === "admin" && (
-            <div>
-              <Link to="/admin">Panel Admin</Link>
+            <div style={{ marginTop: 12 }}>
+              <Link to="/admin" style={{ textDecoration: "none" }}>
+                <button className="boton-principal">Panel Admin</button>
+              </Link>
             </div>
           )}
         </div>
       )}
-
+      
       <Outlet />
     </div>
   )

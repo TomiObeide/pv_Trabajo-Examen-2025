@@ -1,31 +1,48 @@
 import { useState } from "react"
-import { iniciarSesion, obtenerUsuarios } from "../lib/usuarios"
+import { useNavigate } from "react-router-dom"
+import { iniciarSesion } from "../lib/usuarios"
 
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [mensaje, setMensaje] = useState("")
+
+  // redirige usuario dsp del login
+  const navigate = useNavigate()
 
   function manejarLogin(e) {
-    e.preventDefault()
-    obtenerUsuarios() // fuerza sembrado inicial
+    e.preventDefault() 
+
     const usuario = iniciarSesion(email, password)
+
     if (usuario) {
-      window.location.href = "/"
+      // si los datos son correctos se va a la pag principal
+      navigate("/")
     } else {
-      setMensaje("Credenciales inválidas")
+      // si no muestra mensaje
+      alert("Credenciales inválidas")
     }
   }
 
   return (
     <div>
       <h2>Iniciar Sesión</h2>
+
+      {/* form login */}
       <form onSubmit={manejarLogin}>
-        <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-        <input type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} />
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={e => setEmail(e.target.value)} 
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={e => setPassword(e.target.value)} 
+        />
         <button type="submit">Entrar</button>
       </form>
-      {mensaje && <p>{mensaje}</p>}
     </div>
   )
 }

@@ -12,7 +12,9 @@ import AdminUsuarios from "./paginas/AdminUsuarios"
 
 import { obtenerUsuarioActual } from "./lib/usuarios"
 
-// Funcion proteger rutas
+// proteccion d admin
+// si no hay user va a login
+// si la ruta requiere acceso admin redirige a login
 function RutaProtegida({ children, soloAdmin = false }) {
   const usuario = obtenerUsuarioActual()
   if (!usuario) return <Login />
@@ -20,23 +22,24 @@ function RutaProtegida({ children, soloAdmin = false }) {
   return children
 }
 
+// rutas principales
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <App />, 
     children: [
       {
-        index: true,
+        index: true, 
         element: (
           <RutaProtegida>
-            <Reservar />
+            <Reservar /> {/* solo los logueados podran reservar */}
           </RutaProtegida>
         ),
       },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
 
-      // Proteccion para admin panel
+      // rutas admin
       {
         path: "admin",
         element: (
@@ -62,12 +65,13 @@ const router = createBrowserRouter([
         ),
       },
 
-      // Pagina de errorr
+      // ruta en caso de inexistencia error
       { path: "*", element: <h2>Página no encontrada</h2> },
     ],
   },
 ])
 
+// render principal
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RouterProvider router={router} />

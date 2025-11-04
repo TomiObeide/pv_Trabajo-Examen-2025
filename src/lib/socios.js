@@ -1,20 +1,20 @@
-const CLAVE = "socios"
+const CLAVE = "socios" 
 
-// Socios iniciales fijos
+// lista d socios fijos
 const SOCIOS_INICIALES = [
   {
     id: "socio-1",
     nombre: "Carlos Pérez",
-    experiencia: 5,
-    licencia: "ABC123",
+    experiencia: 5, 
+    patente: "ABC123",
     vehiculo: { tipo: "X", modelo: "Toyota Corolla" },
-    eliminado: false
+    eliminado: false // borrado logico
   },
   {
     id: "socio-2",
     nombre: "María Gómez",
     experiencia: 3,
-    licencia: "XYZ789",
+    patente: "XYZ789",
     vehiculo: { tipo: "Luxe", modelo: "Honda Civic" },
     eliminado: false
   },
@@ -22,12 +22,13 @@ const SOCIOS_INICIALES = [
     id: "socio-3",
     nombre: "Juan López",
     experiencia: 10,
-    licencia: "LMN456",
+    patente: "LMN456",
     vehiculo: { tipo: "Premium", modelo: "BMW Serie 5" },
     eliminado: false
   }
 ]
 
+// verifica lista d socios y si no hay inicializa socios 
 export function obtenerSocios() {
   let data = localStorage.getItem(CLAVE)
   if (!data) {
@@ -41,13 +42,14 @@ export function guardarSocios(lista) {
   localStorage.setItem(CLAVE, JSON.stringify(lista))
 }
 
-export function crearSocio({ nombre, experiencia, licencia, tipoVehiculo, modeloVehiculo }) {
+// funcion crear socios
+export function crearSocio({ nombre, experiencia, patente, tipoVehiculo, modeloVehiculo }) {
   const lista = obtenerSocios()
   const nuevo = {
-    id: crypto.randomUUID(),
+    id: crypto.randomUUID(), // id unico
     nombre,
     experiencia,
-    licencia,
+    patente,
     vehiculo: {
       tipo: tipoVehiculo,
       modelo: modeloVehiculo
@@ -58,11 +60,15 @@ export function crearSocio({ nombre, experiencia, licencia, tipoVehiculo, modelo
   return nuevo
 }
 
+// editar socios al apretar
 export function editarSocio(id, cambios) {
-  const lista = obtenerSocios().map(s => s.id === id ? { ...s, ...cambios } : s)
+  const lista = obtenerSocios().map(s =>
+    s.id === id ? { ...s, ...cambios } : s
+  )
   guardarSocios(lista)
 }
 
+// elmina socio(borrado logico)
 export function eliminarLogicoSocio(id) {
   editarSocio(id, { eliminado: true })
 }

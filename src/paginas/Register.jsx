@@ -1,32 +1,37 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { registrarUsuario } from "../lib/usuarios"
 
 export default function Register() {
   const [nombre, setNombre] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [mensaje, setMensaje] = useState("")
+
+  const navigate = useNavigate()
 
   function manejarRegistro(e) {
-    e.preventDefault()
+    e.preventDefault() 
+
     registrarUsuario({ nombre, email, password })
-    setMensaje("Usuario registrado correctamente ✅")
-    setNombre("")
-    setEmail("")
-    setPassword("")
+
+    // redirige al login cuando se crea un usuario
+    navigate("/login")
   }
 
   return (
     <div>
-      <h2>Registro</h2>
+      <h2>Registrarse</h2>
+
+      {/* formulario d register */}
       <form onSubmit={manejarRegistro}>
         <input
-          placeholder="Nombre"
+          placeholder="Nombre completo"
           value={nombre}
-          onChange={e => setNombre(e.target.value)}
+          onChange={e => setNombre(e.target.value)} 
         />
         <input
-          placeholder="Email"
+          type="email"
+          placeholder="Correo electrónico"
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
@@ -36,10 +41,8 @@ export default function Register() {
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
-        <button type="submit">Registrar</button>
+        <button type="submit">Crear cuenta</button>
       </form>
-
-      {mensaje && <p>{mensaje}</p>}
     </div>
   )
 }
